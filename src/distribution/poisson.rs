@@ -435,6 +435,7 @@ mod tests {
     #[test]
     fn test_entropy() {
         let entropy = |x: Poisson| x.entropy().unwrap();
+        // References sum -P(k) ln P(k) for k up to 4000 in 256-bit arb ball arithmetic.
         test_absolute(0.1, 0.3336769965012326325387, 1e-15, entropy);
         test_absolute(1.5, 1.539404652817375537421, 1e-15, entropy);
         test_absolute(5.4, 2.244575584280276927019, 1e-15, entropy);

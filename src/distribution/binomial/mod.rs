@@ -504,12 +504,13 @@ mod tests {
     #[test]
     fn test_entropy_large_n() {
         let entropy = |x: Binomial| x.entropy().unwrap();
-        // References are direct sums over the pmf at 40 significant digits.
+        // References sum -P(k) ln P(k) over every k in 0..=n, with no terms
+        // dropped, for the f64 value of p in 256-bit arb ball arithmetic.
         test_absolute(0.5, 10_000_000, 8.7848391781238864931, 1e-12, entropy);
-        test_absolute(0.2, 2_000_000, 7.7569765768424600652, 1e-12, entropy);
-        test_absolute(1e-7, 20_000_000, 1.7048826093505606684, 1e-7, entropy);
-        test_absolute(4e-6, 2_000_000, 2.4474308984566899933, 1e-5, entropy);
-        test_absolute(1e-5, 2_000_000, 2.9125215274209363664, 2e-4, entropy);
+        test_absolute(0.2, 2_000_000, 7.7569765768424600860, 1e-12, entropy);
+        test_absolute(1e-7, 20_000_000, 1.7048826093505606427, 1e-7, entropy);
+        test_absolute(4e-6, 2_000_000, 2.4474308984566899701, 1e-5, entropy);
+        test_absolute(1e-5, 2_000_000, 2.9125215274209364077, 2e-4, entropy);
     }
 
     #[test]
@@ -525,6 +526,7 @@ mod tests {
     #[test]
     fn test_entropy_at_max_n() {
         let entropy = create_ok(0.5, u64::MAX).entropy().unwrap();
+        // ln(2 * pi * e * n / 4) / 2; at p = 0.5 the next term is about -1 / (12 * n^2).
         prec::assert_relative_eq!(entropy, 22.906501130562977334);
     }
 
